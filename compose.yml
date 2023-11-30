@@ -1,52 +1,55 @@
-version: '3.3'
-
+version: '3'
 services:
-  db:
+  db1:
     image: mysql:5.7
+    networks:
+    - lan1
     ports:
     - 3306:3306
-    #volumes:
-    #  - db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
       MYSQL_DATABASE: ${MYSQL_DB_NAME}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASS}
-
-  wordpress:
+  wp1:
     depends_on:
-      - db
+    - db1
     image: wordpress:${WORDPRESS_VERSION}
+    networks:
+    - lan1
     ports:
-      - "8000:80"
+    - 8001:80
     working_dir: /var/www/html
     volumes:
-     - ./wp-content/:/var/www/html/wp-content
+    - ./wp-content1/:/var/www/html/wp-content
     restart: always
     environment:
-      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_HOST: db1:3306
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
-  
-  wpcli:
+  wpcli1:
     depends_on:
-     - db
-     - wordpress
+    - db1
+    - wp1
     image: wordpress:cli
+    networks:
+    - lan1
     volumes_from:
-     - wordpress
+    - wp1
     environment:
-      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_HOST: db1:3306
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
-    command: >
-      /bin/sh -c '
-      sleep 30;
-      wp core install --url=localhost:8000 --title="${BLOG_TITLE}" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW} --admin_email=${WORDPRESS_MAIL}
-      '
-    #command: --info
-#volumes:
-#    db_data: {}
+    command: " \n                    /bin/sh -c '\n                    sleep 30;\n\
+      \                    wp core install --url=localhost:8001 --title=\"${BLOG_TITLE}\"\
+      \ --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW} --admin_email=${WORDPRESS_MAIL}\n\
+      \                    '\n                    "
+networks:
+  lan1:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.1.0/24

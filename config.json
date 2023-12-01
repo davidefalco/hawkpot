@@ -1,0 +1,7 @@
+{
+"subnets":1,
+"1":{
+	"plugin":{"name":"forminator","version":"1.28.0"},
+	"theme":{"name":"hello-elementor", "version":"2.9.0"}
+	}
+}

@@ -87,12 +87,12 @@ for i in range(1, subnets + 1):
     if conf_j[f'{i}']['plugin']['name'] is not None and conf_j[f'{i}']['plugin']['version'] is not None:
         plugin_name = conf_j[f'{i}']['plugin']['name']
         plugin_version = conf_j[f'{i}']['plugin']['version']
-        plg_command = f'wp plugin install {plugin_name} --version={plugin_version} --activate'
+        plg_command = f'wp plugin install {plugin_name} --version={plugin_version} --activate --allow-root'
 
     if conf_j[f'{i}']['theme']['name'] is not None and conf_j[f'{i}']['theme']['version'] is not None:
         theme_name = conf_j[f'{i}']['theme']['name']
         theme_version = conf_j[f'{i}']['theme']['version']
-        thm_command = f'wp theme install {theme_name} --version={theme_version} --activate'
+        thm_command = f'wp theme install {theme_name} --version={theme_version} --activate --allow-root'
     
 
     wp_service_name = 'wp' + str(i)
@@ -102,7 +102,6 @@ for i in range(1, subnets + 1):
 
     lan_name = 'lan' + str(i)
     db_port = str(3305 + i)
-    # wordpress hosts port
     port = str(8000 + i)
     subnet = '10.0.'+str(i)+'.0/24'
 
@@ -136,7 +135,7 @@ for i in range(1, subnets + 1):
                 'WORDPRESS_DB_USER':'${WORDPRESS_DB_USER}',
                 'WORDPRESS_DB_PASSWORD':'${WORDPRESS_DB_PASS}',
                 'WORDPRESS_DB_NAME':'${MYSQL_DB_NAME}'                 
-            },
+            }
         }
     }
 
@@ -144,6 +143,7 @@ for i in range(1, subnets + 1):
         wpcli_service_name:{
             'depends_on':[db_service_name, wp_service_name],
             'image':'wordpress:cli',
+            'user':'33:33',
             'networks':[lan_name],
             'volumes_from':[wp_service_name],
             'environment':{

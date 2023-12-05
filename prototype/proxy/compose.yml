@@ -7,14 +7,14 @@ services:
     networks:
     - prototype_lan1
     - prototype_lan2
-    - prototype_lan3
+#    - prototype_lan3
 networks:
   prototype_lan1:
     external: true
   prototype_lan2:
     external: true
-  prototype_lan3:
-    external: true
+#  prototype_lan3:
+#    external: true
 #     ipam:
 #       driver: default
 #       config:

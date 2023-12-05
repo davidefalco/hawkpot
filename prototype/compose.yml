@@ -1,0 +1,36 @@
+version: '3'
+services:
+  proxy1:
+    image: nginx
+    networks:
+    - lan1
+    ports:
+    - 8081:80
+  proxy2:
+    image: nginx
+    networks:
+    - lan2
+    ports:
+    - 8082:80
+  proxy3:
+    image: nginx
+    networks:
+    - lan3
+    ports:
+    - 8083:80
+networks:
+  lan1:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.1.0/24
+  lan2:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.2.0/24
+  lan3:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.3.0/24

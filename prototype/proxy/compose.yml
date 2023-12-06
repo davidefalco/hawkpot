@@ -4,6 +4,11 @@ services:
     image: nginx
     ports:
     - 8080:80
+    - 443:443
+    volumes:
+    - ./log:/var/log/nginx/
+    - ./ssl:/etc/nginx/ssl
+    - ./conf:/etc/nginx/conf.d/
     networks:
     - prototype_lan1
     - prototype_lan2

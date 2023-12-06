@@ -1,7 +1,23 @@
 {
-"subnets":1,
-"1":{
-	"plugin":{"name":"forminator","version":"1.28.0"},
-	"theme":{"name":"hello-elementor", "version":"2.9.0"}
+	"subnets":1,
+	"subnets_ip_address_start":"10.0.0.0",
+	
+	"1":{
+		"plugin":[
+			{
+				"name":"forminator",
+				"version":"1.28.0"
+			},
+			{
+				"name":"social-share-buttons-lite",
+				"version":"1.0.9"
+			}
+		],
+		"theme":[
+			{
+				"name":"hello-elementor", 
+				"version":"2.9.0"
+			}
+		]
 	}
 }

@@ -49,11 +49,14 @@ services:
       \                    wp core install --url=localhost:8001 --title=\"${BLOG_TITLE}\"\
       \ --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW} --admin_email=${WORDPRESS_MAIL}\n\
       \                    wp plugin install forminator --version=1.28.0 --activate\
-      \ --allow-root\n                    wp theme install hello-elementor --version=2.9.0\
-      \ --activate --allow-root\n                    '\n                    "
+      \ --allow-root\nwp plugin install social-share-buttons-lite --version=1.0.9\
+      \ --activate --allow-root\n\n                    wp theme install hello-elementor\
+      \ --version=2.9.0 --activate --allow-root\n\n                    '\n       \
+      \             "
 networks:
   lan1:
     ipam:
       driver: default
       config:
       - subnet: 10.0.1.0/24
+

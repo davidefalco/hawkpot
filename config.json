@@ -1,6 +1,8 @@
 {
 	"subnets":1,
 	"subnets_ip_address_start":"10.0.0.0",
+	"start_port":8000,
+	"dns":"tuo-dns.org",
 	
 	"1":{
 		"plugin":[

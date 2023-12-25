@@ -1,5 +1,15 @@
 version: '3'
 services:
+  rev:
+    image: nginx
+    ports:
+    - 443:443
+    volumes:
+    - ./proxy/log:/var/log/nginx/
+    - ./proxy/ssl:/etc/nginx/ssl
+    - ./proxy/conf:/etc/nginx/conf.d
+    networks:
+    - lan1
   db1:
     image: mysql:5.7
     networks:
@@ -17,13 +27,14 @@ services:
     - db1
     image: wordpress:${WORDPRESS_VERSION}
     user: '33:33'
-    networks:
-    - lan1
+    networks: 
+        lan1:
+            ipv4_address: 10.0.1.5
     ports:
     - 8001:80
     working_dir: /var/www/html
     volumes:
-    - ./wp-content1/:/var/www/html/wp-content
+    - ./hp1/wp-content1/:/var/www/html/wp-content
     restart: always
     environment:
       WORDPRESS_DB_HOST: db1
@@ -46,7 +57,7 @@ services:
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --url=localhost:8001 --title=\"${BLOG_TITLE}\"\
+      \                    wp core install --url=172.28.59.222:8001 --title=\"${BLOG_TITLE}\"\
       \ --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW} --admin_email=${WORDPRESS_MAIL}\n\
       \                    wp plugin install forminator --version=1.28.0 --activate\
       \ --allow-root\nwp plugin install social-share-buttons-lite --version=1.0.9\

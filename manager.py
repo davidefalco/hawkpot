@@ -1,5 +1,8 @@
 import json
 import yaml
+import subprocess
+import os
+import sys
 
 # configuration file from user
 with open("./config.json", "r") as conf:
@@ -7,12 +10,46 @@ with open("./config.json", "r") as conf:
 
 sub_ip = conf_j["subnets_ip_address_start"]
 subnets = conf_j["subnets"]
+start_port = conf_j["start_port"]
+dns = conf_j["dns"]
 
 template_yaml = {
     'version':'3',
     'services':{},
     'networks':{}
 }
+
+networks_list = []
+for i in range(1, subnets + 1):
+    networks_list.append(f'lan{str(i)}')
+
+# reverse proxy service
+revproxy = {
+    'rev':{
+        'image':'nginx',
+        'ports':['443:443'],
+        'volumes':['./proxy/log:/var/log/nginx/', './proxy/ssl:/etc/nginx/ssl', './proxy/conf:/etc/nginx/conf.d'],
+        'networks':networks_list
+    }
+}
+
+template_yaml['services'].update(revproxy)
+
+ip = sub_ip.split(".")
+
+# default.conf configration for the proxy
+if not os.path.exists("./proxy/conf/default.conf"):
+    subprocess.call(["mkdir", "-p", "./proxy/conf"])
+    default_conf = 'server{\n\tlisten 443;\n\tserver_name '+dns+';\n\n\tssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;\n\tssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;\n\n\t'
+    for i in range (1, subnets + 1):
+        wp_ip = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.5'
+        default_conf = ''.join([default_conf, f'location /hp{i}/'+' {\n\t\t'+f'proxy_pass http://{wp_ip};'+'\n\t}\n\t\t'])
+
+    default_conf = ''.join([default_conf, '\n}'])
+    with open('./proxy/conf/default.conf', 'w') as proxyconf:
+        proxyconf.write(default_conf)   
+
+#sys.exit()
 
 for i in range(1, subnets + 1):
     plg_command = ''
@@ -33,14 +70,15 @@ for i in range(1, subnets + 1):
 
     wp_service_name = 'wp' + str(i)
     db_service_name = 'db' + str(i)
-    volume_name = './wp-content' + str(i) + '/'
+    volume_name = f'./hp{str(i)}/wp-content' + str(i) + '/'
     wpcli_service_name = 'wpcli' + str(i)
 
     lan_name = 'lan' + str(i)
     db_port = str(3305 + i)
-    port = str(8000 + i)
+    port = str(start_port + i)
     ip = sub_ip.split(".")
     subnet = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.'+str(ip[3])+'/24'
+    wp_ip = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.5' # fixed ip address for all wp services
 
     update_service_db = {
         db_service_name:{
@@ -62,10 +100,14 @@ for i in range(1, subnets + 1):
             'depends_on':[db_service_name],
             'image':'wordpress:${WORDPRESS_VERSION}',
             'user':'33:33',
-            'networks':[lan_name],
+            'networks':{
+                f'{lan_name}':{
+                    'ipv4_address': f'{wp_ip}'
+                }
+            },
             'ports':[port + str(':80')],
-            'working_dir':'/var/www/html',
-            'volumes':[volume_name + str(':/var/www/html/wp-content')],
+            'working_dir': f'/var/www/html/hp{str(i)}',
+            'volumes':[volume_name + str(':/var/www/html/wp-content')],#, f'./site{str(i)}/apache2:/etc/apache2/apache2.conf'],
             'restart':'always',
             'environment':{
                 'WORDPRESS_DB_HOST': f'{db_service_name}', #:{str(db_port)}
@@ -92,7 +134,7 @@ for i in range(1, subnets + 1):
             'command':f''' 
                     /bin/sh -c '
                     sleep 60;
-                    wp core install --url=localhost:{port} --title=\"${{BLOG_TITLE}}\" --admin_name=${{WORDPRESS_ADMIN}} --admin_password=${{WORDPRESS_ADMIN_PSW}} --admin_email=${{WORDPRESS_MAIL}}
+                    wp core install --url={dns} --title=\"${{BLOG_TITLE}}\" --admin_name=${{WORDPRESS_ADMIN}} --admin_password=${{WORDPRESS_ADMIN_PSW}} --admin_email=${{WORDPRESS_MAIL}}
                     {plg_command}
                     {thm_command}
                     '

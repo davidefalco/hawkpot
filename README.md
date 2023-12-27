@@ -13,5 +13,5 @@
 Check the example in this repo.
 
 #### `.env` file
-`config.json` file can be used for customizing authentication information about the database and Wordpress.<br>
+`.env` file can be used for customizing authentication information about the database and Wordpress.<br>
 Check the example in this repo.

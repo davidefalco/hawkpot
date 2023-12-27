@@ -1,15 +1,25 @@
 {
-	"subnets":1,
+	"subnets":2,
 	"subnets_ip_address_start":"10.0.0.0",
 	"start_port":8000,
-	"dns":"tuo-dns.org",
-	
+	"dns":"172.28.59.222",
+
 	"1":{
 		"plugin":[
 			{
 				"name":"forminator",
 				"version":"1.28.0"
-			},
+			}
+		],
+		"theme":[
+			{
+				"name":"hello-elementor", 
+				"version":"2.9.0"
+			}
+		]
+	},
+	"2":{
+		"plugin":[
 			{
 				"name":"social-share-buttons-lite",
 				"version":"1.0.9"
@@ -17,8 +27,8 @@
 		],
 		"theme":[
 			{
-				"name":"hello-elementor", 
-				"version":"2.9.0"
+				"name":"oceanwp", 
+				"version":"3.5.3"
 			}
 		]
 	}

@@ -2,6 +2,7 @@ import json
 import yaml
 import subprocess
 import os
+import time
 import sys
 
 # configuration file from user
@@ -20,8 +21,10 @@ template_yaml = {
 }
 
 networks_list = []
+title_list = []
 for i in range(1, subnets + 1):
     networks_list.append(f'lan{str(i)}')
+    title_list.append(conf_j[f"{i}"]["title"])
 
 # reverse proxy service
 revproxy = {
@@ -49,8 +52,6 @@ if not os.path.exists("./proxy/conf/default.conf"):
     with open('./proxy/conf/default.conf', 'w') as proxyconf:
         proxyconf.write(default_conf)   
 
-#sys.exit()
-
 for i in range(1, subnets + 1):
     plg_command = ''
     thm_command = ''
@@ -67,7 +68,6 @@ for i in range(1, subnets + 1):
             theme_version = theme['version']
             thm_command = ''.join([thm_command, f'wp theme install --path=/var/www/html/hp{i} {theme_name} --version={theme_version} --activate --allow-root\n'])
     
-
     wp_service_name = 'wp' + str(i)
     db_service_name = 'db' + str(i)
     volume_name = f'./hp{str(i)}/wp-content' + str(i) + '/'
@@ -134,7 +134,7 @@ for i in range(1, subnets + 1):
             'command':f''' 
                     /bin/sh -c '
                     sleep 60;
-                    wp core install --path=/var/www/html/hp{i} --url={dns}:{port}/hp{i} --title=\"${{BLOG_TITLE}}\" --admin_name=${{WORDPRESS_ADMIN}} --admin_password=${{WORDPRESS_ADMIN_PSW}} --admin_email=${{WORDPRESS_MAIL}}
+                    wp core install --path=/var/www/html/hp{i} --url={dns}:{port}/hp{i} --title=\"{title_list[i - 1]}\" --admin_name=${{WORDPRESS_ADMIN}} --admin_password=${{WORDPRESS_ADMIN_PSW}} --admin_email=${{WORDPRESS_MAIL}}
                     wp search-replace --path=/var/www/html/hp{i} 'http://{dns}:{port}/hp{i}' 'http://{dns}/hp{i}'
                     {plg_command}
                     {thm_command}
@@ -161,7 +161,6 @@ for i in range(1, subnets + 1):
 out = yaml.dump(template_yaml, sort_keys=False)
 
 print(out)
-
 
     
 

@@ -57,10 +57,10 @@ services:
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp1 --url=172.28.59.222:8001/hp1\
-      \ --title=\"${BLOG_TITLE}\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
+      \                    wp core install --path=/var/www/html/hp1 --url=172.28.49.205:8001/hp1\
+      \ --title=\"Unito Informatica\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
       \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp1\
-      \ 'http://172.28.59.222:8001/hp1' 'http://172.28.59.222/hp1'\n             \
+      \ 'http://172.28.49.205:8001/hp1' 'http://172.28.49.205/hp1'\n             \
       \       wp plugin install --path=/var/www/html/hp1 forminator --version=1.28.0\
       \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
       \ hello-elementor --version=2.9.0 --activate --allow-root\n\n              \
@@ -111,10 +111,10 @@ services:
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp2 --url=172.28.59.222:8002/hp2\
-      \ --title=\"${BLOG_TITLE}\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
+      \                    wp core install --path=/var/www/html/hp2 --url=172.28.49.205:8002/hp2\
+      \ --title=\"Unito Medicina\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
       \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp2\
-      \ 'http://172.28.59.222:8002/hp2' 'http://172.28.59.222/hp2'\n             \
+      \ 'http://172.28.49.205:8002/hp2' 'http://172.28.49.205/hp2'\n             \
       \       wp plugin install --path=/var/www/html/hp2 social-share-buttons-lite\
       \ --version=1.0.9 --activate --allow-root\n\n                    wp theme install\
       \ --path=/var/www/html/hp2 oceanwp --version=3.5.3 --activate --allow-root\n\

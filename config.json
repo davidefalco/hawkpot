@@ -2,9 +2,10 @@
 	"subnets":2,
 	"subnets_ip_address_start":"10.0.0.0",
 	"start_port":8000,
-	"dns":"172.28.59.222",
+	"dns":"172.28.49.205",
 
 	"1":{
+		"title":"Unito Informatica",
 		"plugin":[
 			{
 				"name":"forminator",
@@ -19,6 +20,7 @@
 		]
 	},
 	"2":{
+		"title":"Unito Medicina",
 		"plugin":[
 			{
 				"name":"social-share-buttons-lite",

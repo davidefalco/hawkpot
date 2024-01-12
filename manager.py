@@ -5,6 +5,17 @@ import os
 import time
 import sys
 
+user_filename = ''
+redirection_flag = False
+if '-s' in sys.argv:
+    index = sys.argv.index('-s')
+    if len(sys.argv) >= index + 2:
+        user_filename = sys.argv[index + 1]
+        redirection_flag = True
+    else: 
+        print("place a name for your file redirection, use: python3 manager.py -s <filename>")
+        sys.exit()
+        
 # configuration file from user
 with open("./config.json", "r") as conf:
     conf_j = json.loads(conf.read())
@@ -160,8 +171,13 @@ for i in range(1, subnets + 1):
 
 out = yaml.dump(template_yaml, sort_keys=False)
 
-print(out)
 
+if redirection_flag:
+    with open(user_filename, 'w') as f:
+        f.write(out)
+else: print(out)
+
+print('test')
     
 
 

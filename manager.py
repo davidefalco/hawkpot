@@ -5,6 +5,7 @@ import os
 import time
 import sys
 
+# checking for -s flag
 user_filename = ''
 redirection_flag = False
 if '-s' in sys.argv:
@@ -13,8 +14,17 @@ if '-s' in sys.argv:
         user_filename = sys.argv[index + 1]
         redirection_flag = True
     else: 
-        print("place a name for your file redirection, use: python3 manager.py -s <filename>")
+        print("Place a name for your file redirection, use: python3 manager.py -s <filename>")
         sys.exit()
+
+user_saveipt_config = False
+if not '--no-iptconf' in sys.argv:
+    # saving current docker iptables' rules
+    ipt_command = ['sudo', 'iptables-save']
+    print('Saving current docker iptables\' rules. Plase be sure your docker service is started.')
+    subprocess.run(ipt_command, stdout = open('current-iptables.save', 'w'), check = True)
+
+#sys.exit()
         
 # configuration file from user
 with open("./config.json", "r") as conf:
@@ -177,7 +187,8 @@ if redirection_flag:
         f.write(out)
 else: print(out)
 
-print('test')
+subprocess.call(['python3', 'log_manager.py'])
+subprocess.call(['python3', 'intrusion_detector.py'])
     
 
 

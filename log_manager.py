@@ -16,7 +16,7 @@ if os.path.exists("./proxy/log/access.log") and os.path.exists("./proxy/log/erro
             print("Backup created at " + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             time.sleep(300)
         except KeyboardInterrupt:
-            print("\nExiting..\n")
+            print("\nExiting...\n")
             sys.exit()
 else:
     print("./proxy/log/ directory does not exists, check your hawkpot installation")

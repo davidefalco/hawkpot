@@ -47,25 +47,45 @@ for i in range(1, subnets + 1):
     networks_list.append(f'lan{str(i)}')
     title_list.append(conf_j[f"{i}"]["title"])
 
+ip = sub_ip.split(".")
+net_rev_proxy = {}
+j = 1
+for net in networks_list:
+    # ip address for each interface of reverse proxy is x.x.x.10
+    inner_net = {
+        f'{net}':{
+            'ipv4_address': str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + j)+'.10'
+        }
+    }
+    net_rev_proxy.update(inner_net)
+    j += 1
+
+'''
+networks = {}
+networks.update(net_rev_proxy)
+print(networks)
+sys.exit()
+'''
+
 # reverse proxy service
 revproxy = {
     'rev':{
         'image':'nginx',
         'ports':['443:443'],
         'volumes':['./proxy/log:/var/log/nginx/', './proxy/ssl:/etc/nginx/ssl', './proxy/conf:/etc/nginx/conf.d'],
-        'networks':networks_list
+        'networks': net_rev_proxy
     }
 }
 
 template_yaml['services'].update(revproxy)
 
-ip = sub_ip.split(".")
 
 # default.conf configuration for the proxy
 if not os.path.exists("./proxy/conf/default.conf"):
     subprocess.call(["mkdir", "-p", "./proxy/conf"])
     default_conf = 'server{\n\tlisten 443 ssl;\n\tserver_name '+dns+';\n\n\tssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;\n\tssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;\n\n\t'
     for i in range (1, subnets + 1):
+        # wp_ip is ip address for gateway of each honeypot
         wp_ip = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.1'
         default_conf = ''.join([default_conf, f'location /hp{i}'+' {\n\t\t'+'proxy_set_header Host $host;\n\t\tproxy_set_header X-Real-IP $remote_addr;\n\t\tproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\t\tproxy_set_header X-Forwarded-Proto $scheme;\n\t\tproxy_set_header X-Forwarded-URI $request_uri;\n\t\tproxy_redirect http:// https://;\n\t\t'+f'proxy_pass http://{wp_ip}:{start_port+i}/hp{i};\n\t'+'}'])
 
@@ -187,8 +207,8 @@ if redirection_flag:
         f.write(out)
 else: print(out)
 
-subprocess.call(['python3', 'log_manager.py'])
-subprocess.call(['python3', 'intrusion_detector.py'])
+#subprocess.call(['python3', 'log_manager.py'])
+#subprocess.call(['python3', 'intrusion_detector.py'])
     
 
 

@@ -23,8 +23,6 @@ if not '--no-iptconf' in sys.argv:
     ipt_command = ['sudo', 'iptables-save']
     print('Saving current docker iptables\' rules. Plase be sure your docker service is started.')
     subprocess.run(ipt_command, stdout = open('current-iptables.save', 'w'), check = True)
-
-#sys.exit()
         
 # configuration file from user
 with open("./config.json", "r") as conf:
@@ -41,13 +39,26 @@ template_yaml = {
     'networks':{}
 }
 
+ip = sub_ip.split(".")
+ipt_rules = '#!/bin/sh\niptables -D DOCKER-USER 1\n'
 networks_list = []
 title_list = []
 for i in range(1, subnets + 1):
     networks_list.append(f'lan{str(i)}')
     title_list.append(conf_j[f"{i}"]["title"])
 
-ip = sub_ip.split(".")
+    # filling the bash file for iptables rules
+    ipt_rules = ''.join([ipt_rules, f'iptables -N COUNT_HP{i}\n', 
+                        f'iptables -A COUNT_HP{i} -m limit --limit 50/day --limit-burst 50 -j ACCEPT\n', 
+                        f'iptables -A COUNT_HP{i} -j LOG --log-prefix \' WARN_HP{i} \'\n',
+                        f'iptables -A COUNT_HP{i} -j REJECT --reject-with icmp-port-unreachable\n',
+                        f'iptables -A DOCKER-USER -s {str(ip[0])+"."+str(ip[1])+"."+str(int(ip[2]) + i)+".5"} ! -d {str(ip[0])+"."+str(ip[1])+"."+str(int(ip[2]) + i)+".10"} -p tcp --dport 443 -j COUNT_HP{i}\n'])
+
+with open('rules.sh', 'w') as file:
+    file.write(ipt_rules)
+
+#sys.exit()
+
 net_rev_proxy = {}
 j = 1
 for net in networks_list:
@@ -207,6 +218,7 @@ if redirection_flag:
         f.write(out)
 else: print(out)
 
+# run rules.sh for appllying iptables rules
 #subprocess.call(['python3', 'log_manager.py'])
 #subprocess.call(['python3', 'intrusion_detector.py'])
     

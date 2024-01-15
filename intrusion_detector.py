@@ -23,5 +23,8 @@ if __name__ == '__main__':
     for line in loglines:
         # print(line)
         if 'WARN' in line:
-            print('Intrusion detected\n')
-            print(line)
+            splitted_line = line.split(" ")
+            for word in splitted_line:
+                if 'WARN' in word:
+                    print('Intrusion detected in ' + word[5:] + '\n')
+                    print(line)

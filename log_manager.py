@@ -13,8 +13,10 @@ if os.path.exists("./proxy/log/access.log") and os.path.exists("./proxy/log/erro
         try:
             subprocess.call(["cp", "./proxy/log/access.log", "./logbak/"])
             subprocess.call(["cp", "./proxy/log/error.log", "./logbak/"])
-            print("Backup created at " + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            time.sleep(300)
+            with open('log_manager.log', 'a+') as log:
+                log.write('Backup created at ' + str(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+                log.write('\n')
+            time.sleep(100)
         except KeyboardInterrupt:
             print("\nExiting...\n")
             sys.exit()

@@ -18,13 +18,16 @@ def follow(file):
 if __name__ == '__main__':
     logfile = open('/var/log/kern.log', 'r')
     loglines = follow(logfile)
-    print('Intrustion detector started...\n')
+    #print('Intrustion detector started...\n')
+
+    if not os.path.exists('./intrusions.log'):
+        open('./intrusions.log', 'a+').close()
 
     for line in loglines:
-        # print(line)
         if 'WARN' in line:
             splitted_line = line.split(" ")
             for word in splitted_line:
                 if 'WARN' in word:
-                    print('Intrusion detected in ' + word[5:] + '\n')
-                    print(line)
+                    with open('intrusions.log', 'a+') as log:
+                        log.write('Intrusion detected in ' + word[5:] + '\n')
+                        log.write(line)

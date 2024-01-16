@@ -4,6 +4,13 @@ import subprocess
 import os
 import time
 import sys
+from threading import Thread
+
+def log_manager():
+    subprocess.call(['python3', 'log_manager.py'])
+
+def intrusion_detector():
+    subprocess.call(['python3', 'intrusion_detector.py'])
 
 # checking for -s flag
 user_filename = ''
@@ -18,7 +25,7 @@ if '-s' in sys.argv:
         sys.exit()
 
 user_saveipt_config = False
-if not '--no-iptconf' in sys.argv:
+if not '--no-save-rules' in sys.argv:
     # saving current docker iptables' rules
     ipt_command = ['sudo', 'iptables-save']
     print('Saving current docker iptables\' rules. Plase be sure your docker service is started.')
@@ -216,12 +223,27 @@ out = yaml.dump(template_yaml, sort_keys=False)
 if redirection_flag:
     with open(user_filename, 'w') as f:
         f.write(out)
-else: print(out)
+else: 
+    if '--no-verbose' not in sys.argv:
+        print(out)
 
-# run rules.sh for appllying iptables rules
-#subprocess.call(['python3', 'log_manager.py'])
-#subprocess.call(['python3', 'intrusion_detector.py'])
-    
+
+if '--no-apply-rules' not in sys.argv:
+    subprocess.call(['sudo', 'sh', './rules.sh'])
+
+log_manager_thread = Thread(target = log_manager)
+intrusion_detector_thread = Thread(target = intrusion_detector)
+log_manager_thread.daemon = True
+intrusion_detector_thread.daemon = True
+log_manager_thread.start()
+intrusion_detector_thread.start()
+
+try:
+    time.sleep(1)
+    subprocess.call(['tail', '-f', 'log_manager.log', 'intrusions.log'])
+except KeyboardInterrupt:
+    print('Exiting...')
+    sys.exit()
 
 
 

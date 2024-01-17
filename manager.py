@@ -6,6 +6,11 @@ import time
 import sys
 from threading import Thread
 
+# spostare log a lungo termine
+# start stop: pulizia/ricreazione regole iptables
+# sotto-cartelle configurazione: hash
+# moduli
+# systemd: servizio
 def log_manager():
     subprocess.call(['python3', 'log_manager.py'])
 

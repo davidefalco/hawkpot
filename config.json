@@ -2,7 +2,7 @@
 	"subnets":2,
 	"subnets_ip_address_start":"10.0.0.0",
 	"start_port":8000,
-	"dns":"172.28.49.205",
+	"dns":"localhost",
 
 	"1":{
 		"title":"Unito Informatica",

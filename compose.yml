@@ -9,8 +9,10 @@ services:
     - ./proxy/ssl:/etc/nginx/ssl
     - ./proxy/conf:/etc/nginx/conf.d
     networks:
-    - lan1
-    - lan2
+      lan1:
+        ipv4_address: 10.0.1.10
+      lan2:
+        ipv4_address: 10.0.2.10
   db1:
     image: mysql:5.7
     networks:
@@ -57,12 +59,12 @@ services:
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp1 --url=172.28.49.205:8001/hp1\
+      \                    wp core install --path=/var/www/html/hp1 --url=localhost:8001/hp1\
       \ --title=\"Unito Informatica\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
       \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp1\
-      \ 'http://172.28.49.205:8001/hp1' 'http://172.28.49.205/hp1'\n             \
-      \       wp plugin install --path=/var/www/html/hp1 forminator --version=1.28.0\
-      \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
+      \ 'http://localhost:8001/hp1' 'http://localhost/hp1'\n                    wp\
+      \ plugin install --path=/var/www/html/hp1 forminator --version=1.28.0 --activate\
+      \ --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
       \ hello-elementor --version=2.9.0 --activate --allow-root\n\n              \
       \      '\n                    "
   db2:
@@ -111,14 +113,14 @@ services:
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
       WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp2 --url=172.28.49.205:8002/hp2\
+      \                    wp core install --path=/var/www/html/hp2 --url=localhost:8002/hp2\
       \ --title=\"Unito Medicina\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
       \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp2\
-      \ 'http://172.28.49.205:8002/hp2' 'http://172.28.49.205/hp2'\n             \
-      \       wp plugin install --path=/var/www/html/hp2 social-share-buttons-lite\
-      \ --version=1.0.9 --activate --allow-root\n\n                    wp theme install\
-      \ --path=/var/www/html/hp2 oceanwp --version=3.5.3 --activate --allow-root\n\
-      \n                    '\n                    "
+      \ 'http://localhost:8002/hp2' 'http://localhost/hp2'\n                    wp\
+      \ plugin install --path=/var/www/html/hp2 social-share-buttons-lite --version=1.0.9\
+      \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp2\
+      \ oceanwp --version=3.5.3 --activate --allow-root\n\n                    '\n\
+      \                    "
 networks:
   lan1:
     ipam:
@@ -130,4 +132,3 @@ networks:
       driver: default
       config:
       - subnet: 10.0.2.0/24
-

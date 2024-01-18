@@ -65,7 +65,7 @@ template_yaml['services'].update(revproxy)
 
 # default.conf configuration for the proxy
 if not os.path.exists("./proxy/conf/default.conf"):
-    default_conf = parser.proxy_configuration(dns, subnets, ip)
+    default_conf = parser.proxy_configuration(dns, subnets, ip, start_port)
     with open('./proxy/conf/default.conf', 'w') as proxyconf:
         proxyconf.write(default_conf)   
 

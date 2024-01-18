@@ -122,7 +122,7 @@ def make_network(lan_name : str, subnet):
     }
     return update_net
 
-def proxy_configuration(dns : str, subnets : int, ip : list):
+def proxy_configuration(dns : str, subnets : int, ip : list, start_port : str):
     subprocess.call(["mkdir", "-p", "./proxy/conf"])
     default_conf = 'server{\n\tlisten 443 ssl;\n\tserver_name '+dns+';\n\n\tssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;\n\tssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;\n\n\t'
     for i in range (1, subnets + 1):

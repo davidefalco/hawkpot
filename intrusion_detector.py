@@ -15,7 +15,7 @@ def follow(file):
             print('\nExiting...\n')
             sys.exit()
 
-if __name__ == '__main__':
+def start_detector():
     logfile = open('/var/log/kern.log', 'r')
     loglines = follow(logfile)
     #print('Intrustion detector started...\n')

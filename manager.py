@@ -5,13 +5,26 @@ import os
 import time
 import sys
 import configuration_parser as parser
+import log_manager
+import intrusion_detector as detector
+import hashlib
 from threading import Thread
 
-def log_manager():
-    subprocess.call(['python3', 'log_manager.py'])
+compose_filename = 'not found'
+compose_filenames = ['./compose.yml', './compose.yaml']
+for filename in compose_filenames:
+    if os.path.exists(filename):
+        compose_filename = filename
 
-def intrusion_detector():
-    subprocess.call(['python3', 'intrusion_detector.py'])
+if compose_filename == 'not found':
+    # compose file does not found
+    sys.exit()
+
+with open(compose_filename, 'r') as compose_file:
+    data = compose_file.read()
+
+compose_file_hash = hashlib.sha256(data)
+print(compose_file_hash.hexdigest())
 
 # checking for -s flag (save to file)
 user_filename = ''
@@ -30,7 +43,7 @@ user_saveipt_config = False
 if not '--no-save-rules' in sys.argv:
     parser.save_rules()
         
-# configuration file from user
+# configuration file from user (comf.json)
 with open("./config.json", "r") as conf:
     conf_j = json.loads(conf.read())
 
@@ -108,8 +121,8 @@ else:
 if '--no-apply-rules' not in sys.argv:
     subprocess.call(['sudo', 'sh', './rules.sh'])
 
-log_manager_thread = Thread(target = log_manager)
-intrusion_detector_thread = Thread(target = intrusion_detector)
+log_manager_thread = Thread(target = log_manager.start_log_manager)
+intrusion_detector_thread = Thread(target = detector.start_detector)
 log_manager_thread.daemon = True
 intrusion_detector_thread.daemon = True
 log_manager_thread.start()

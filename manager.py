@@ -86,9 +86,9 @@ for i in range(1, subnets + 1):
     subnet = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.'+str(ip[3])+'/24'
     wp_ip = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.5' # last byte of each ip address for each wp service is 5
 
-    update_service_wp = parser.make_wp_service(wp_service_name, db_service_name, lan_name, wp_ip, port, volume_name, i)
-    update_service_db = parser.make_db_service(wp_service_name, lan_name, db_port)
-    update_service_wpcli = parser.make_wpcli_service(wpcli_service_name, db_service_name, wp_service_name, lan_name, i, dns, port, title_list, plg_command, thm_command)
+    update_service_wp = parser.make_wp_service(wp_service_name, db_service_name, lan_name, wp_ip, port, volume_name, i, conf_j)
+    update_service_db = parser.make_db_service(db_service_name, lan_name, db_port, i, conf_j)
+    update_service_wpcli = parser.make_wpcli_service(wpcli_service_name, db_service_name, wp_service_name, lan_name, i, port, plg_command, thm_command, conf_j)
     update_net = parser.make_network(lan_name, subnet)
 
     template_yaml['services'].update(update_service_db)

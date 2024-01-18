@@ -41,11 +41,11 @@ def make_rev_proxy_service(networks_list : list, ip : list):
     }
     return revproxy
 
-def make_wp_service(wp_service_name : str, db_service_name : str, lan_name : str, wp_ip : str, port : str, volume_name : str, i : int):
+def make_wp_service(wp_service_name : str, db_service_name : str, lan_name : str, wp_ip : str, port : str, volume_name : str, i : int, conf_j : dict):
     update_service_wp = {
         wp_service_name:{
             'depends_on':[db_service_name],
-            'image':'wordpress:${WORDPRESS_VERSION}',
+            'image':f'wordpress:{conf_j[f"{i}"]["WORDPRESS_VERSION"]}',
             #'user':'33:33',
             'networks':{
                 f'{lan_name}':{
@@ -58,15 +58,15 @@ def make_wp_service(wp_service_name : str, db_service_name : str, lan_name : str
             'restart':'always',
             'environment':{
                 'WORDPRESS_DB_HOST': f'{db_service_name}', #:{str(db_port)}
-                'WORDPRESS_DB_USER':'${WORDPRESS_DB_USER}',
-                'WORDPRESS_DB_PASSWORD':'${WORDPRESS_DB_PASS}',
-                'WORDPRESS_DB_NAME':'${MYSQL_DB_NAME}'                 
+                'WORDPRESS_DB_USER': conf_j[f'{i}']['WORDPRESS_DB_USER'], # WORDPRESS_DB_USER
+                'WORDPRESS_DB_PASSWORD':conf_j[f'{i}']['WORDPRESS_DB_PASS'], # WORDPRESS_DB_PASS
+                'WORDPRESS_DB_NAME':conf_j[f'{i}']['MYSQL_DB_NAME'] # MYSQL_DB_NAME                
             }
         }
     }
     return update_service_wp
 
-def make_db_service(db_service_name : str, lan_name : str, db_port : str):
+def make_db_service(db_service_name : str, lan_name : str, db_port : str, i : int, conf_j : dict):
     update_service_db = {
         db_service_name:{
             'image':'mysql:5.7',
@@ -74,16 +74,18 @@ def make_db_service(db_service_name : str, lan_name : str, db_port : str):
             'ports':[f'{db_port}:{str(3306)}'],
             'restart':'always', 
             'environment':{
-                'MYSQL_ROOT_PASSWORD':'${MYSQL_ROOT_PASS}',
-                'MYSQL_DATABASE':'${MYSQL_DB_NAME}', 
-                'MYSQL_USER':'${MYSQL_USER}',
-                'MYSQL_PASSWORD':'${MYSQL_PASS}'
+                'MYSQL_ROOT_PASSWORD': conf_j[f'{i}']['MYSQL_ROOT_PASS'], # MYSQL_ROOT_PASS
+                'MYSQL_DATABASE': conf_j[f'{i}']['MYSQL_DB_NAME'], # MYSQL_DB_NAME 
+                'MYSQL_USER': conf_j[f'{i}']['MYSQL_USER'], # MYSQL_USER
+                'MYSQL_PASSWORD': conf_j[f'{i}']['MYSQL_PASS'] # MYSQL_PASS
             }
         }
     }
     return update_service_db
 
-def make_wpcli_service(wpcli_service_name : str, db_service_name : str, wp_service_name : str, lan_name : str, i : int, dns : str, port : str, title_list : list, plg_command : str, thm_command : str):
+def make_wpcli_service(wpcli_service_name : str, db_service_name : str, wp_service_name : str, lan_name : str, i : int, port : str, plg_command : str, thm_command : str, conf_j):
+    dns = conf_j['dns']
+    title = conf_j[f'{i}']['title']
     update_service_wpcli = {
         wpcli_service_name:{
             'depends_on':[db_service_name, wp_service_name],
@@ -93,14 +95,14 @@ def make_wpcli_service(wpcli_service_name : str, db_service_name : str, wp_servi
             'volumes_from':[wp_service_name],
             'environment':{
                 'WORDPRESS_DB_HOST': f'{db_service_name}', #:{str(db_port)}
-                'WORDPRESS_DB_USER':'${WORDPRESS_DB_USER}',
-                'WORDPRESS_DB_PASSWORD':'${WORDPRESS_DB_PASS}',
-                'WORDPRESS_DB_NAME':'${MYSQL_DB_NAME}'                 
+                'WORDPRESS_DB_USER': conf_j[f'{i}']['WORDPRESS_DB_USER'], # WORDPRESS_DB_USER
+                'WORDPRESS_DB_PASSWORD': conf_j[f'{i}']['WORDPRESS_DB_PASS'], # WORDPRESS_DB_PASS
+                'WORDPRESS_DB_NAME': conf_j[f'{i}']['MYSQL_DB_NAME'] # MYSQL_DB_NAME                 
                 },
             'command':f''' 
                     /bin/sh -c '
                     sleep 60;
-                    wp core install --path=/var/www/html/hp{i} --url={dns}:{port}/hp{i} --title=\"{title_list[i - 1]}\" --admin_name=${{WORDPRESS_ADMIN}} --admin_password=${{WORDPRESS_ADMIN_PSW}} --admin_email=${{WORDPRESS_MAIL}}
+                    wp core install --path=/var/www/html/hp{i} --url={dns}:{port}/hp{i} --title=\"{title}\" --admin_name={conf_j[f'{i}']["WORDPRESS_ADMIN"]} --admin_password={conf_j[f'{i}']["WORDPRESS_ADMIN_PSW"]} --admin_email={conf_j[f'{i}']["WORDPRESS_MAIL"]}
                     wp search-replace --path=/var/www/html/hp{i} 'http://{dns}:{port}/hp{i}' 'http://{dns}/hp{i}'
                     {plg_command}
                     {thm_command}

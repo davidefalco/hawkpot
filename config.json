@@ -5,6 +5,17 @@
 	"dns":"localhost",
 
 	"1":{
+		"MYSQL_USER": "db_user",
+        "MYSQL_PASS": "db_pass",
+        "MYSQL_ROOT_PASS": "admin",
+        "MYSQL_DB_NAME": "wordpress",
+        "WORDPRESS_VERSION": "latest",
+        "WORDPRESS_DB_USER": "db_user",
+        "WORDPRESS_DB_PASS": "db_pass",
+        "WORDPRESS_DB_NAME": "wordpress",
+        "WORDPRESS_ADMIN": "wp-admin",
+        "WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
+        "WORDPRESS_MAIL": "unito.admin@mail.com",
 		"title":"Unito Informatica",
 		"plugin":[
 			{
@@ -20,6 +31,17 @@
 		]
 	},
 	"2":{
+		"MYSQL_USER": "db_user",
+        "MYSQL_PASS": "db_pass",
+        "MYSQL_ROOT_PASS": "admin",
+        "MYSQL_DB_NAME": "wordpress",
+        "WORDPRESS_VERSION": "latest",
+        "WORDPRESS_DB_USER": "db_user",
+        "WORDPRESS_DB_PASS": "db_pass",
+        "WORDPRESS_DB_NAME": "wordpress",
+        "WORDPRESS_ADMIN": "wp-admin",
+        "WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
+        "WORDPRESS_MAIL": "unito.admin@mail.com",
 		"title":"Unito Medicina",
 		"plugin":[
 			{

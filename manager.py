@@ -8,23 +8,10 @@ import configuration_parser as parser
 import log_manager
 import intrusion_detector as detector
 import hashlib
+import getpass
 from threading import Thread
 
-compose_filename = 'not found'
-compose_filenames = ['./compose.yml', './compose.yaml']
-for filename in compose_filenames:
-    if os.path.exists(filename):
-        compose_filename = filename
-
-if compose_filename == 'not found':
-    # compose file does not found
-    sys.exit()
-
-with open(compose_filename, 'r') as compose_file:
-    data = compose_file.read()
-
-compose_file_hash = hashlib.sha256(data)
-print(compose_file_hash.hexdigest())
+sudo_pass = getpass.getpass('Please insert your sudo password')
 
 # checking for -s flag (save to file)
 user_filename = ''
@@ -118,10 +105,26 @@ else:
     if '--no-verbose' not in sys.argv:
         print(out)
 
-if '--no-apply-rules' not in sys.argv:
-    subprocess.call(['sudo', 'sh', './rules.sh'])
+compose_filename = 'not found'
+compose_filenames = ['./compose.yml', './compose.yaml']
+for filename in compose_filenames:
+    if os.path.exists(filename):
+        compose_filename = filename
 
-log_manager_thread = Thread(target = log_manager.start_log_manager)
+if compose_filename == 'not found':
+    # compose file does not found
+    sys.exit()
+
+with open(compose_filename, 'r') as compose_file:
+    data = compose_file.read()
+
+# hash calculation for compose file
+compose_file_digest = hashlib.sha256(data.encode('utf-8')).hexdigest()
+
+if '--no-apply-rules' not in sys.argv:
+    subprocess.run(['sudo', 'sh', './rules.sh'], input = (sudo_pass + '\n'), text = True)
+
+log_manager_thread = Thread(target = log_manager.start_log_manager, args = [compose_file_digest, compose_filename, sudo_pass])
 intrusion_detector_thread = Thread(target = detector.start_detector)
 log_manager_thread.daemon = True
 intrusion_detector_thread.daemon = True
@@ -129,7 +132,7 @@ log_manager_thread.start()
 intrusion_detector_thread.start()
 
 try:
-    time.sleep(1)
+    time.sleep(3)
     subprocess.call(['tail', '-f', 'log_manager.log', 'intrusions.log'])
 except KeyboardInterrupt:
     print('Exiting...')

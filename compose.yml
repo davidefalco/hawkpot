@@ -21,14 +21,14 @@ services:
     - 3306:3306
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
-      MYSQL_DATABASE: ${MYSQL_DB_NAME}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_pass
   wp1:
     depends_on:
     - db1
-    image: wordpress:${WORDPRESS_VERSION}
+    image: wordpress:latest
     networks:
       lan1:
         ipv4_address: 10.0.1.5
@@ -40,9 +40,9 @@ services:
     restart: always
     environment:
       WORDPRESS_DB_HOST: db1
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
-      WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
+      WORDPRESS_DB_USER: db_user
+      WORDPRESS_DB_PASSWORD: db_pass
+      WORDPRESS_DB_NAME: wordpress
   wpcli1:
     depends_on:
     - db1
@@ -55,16 +55,16 @@ services:
     - wp1
     environment:
       WORDPRESS_DB_HOST: db1
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
-      WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
+      WORDPRESS_DB_USER: db_user
+      WORDPRESS_DB_PASSWORD: db_pass
+      WORDPRESS_DB_NAME: wordpress
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp1 --url=localhost:8001/hp1\
-      \ --title=\"Unito Informatica\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
-      \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp1\
-      \ 'http://localhost:8001/hp1' 'http://localhost/hp1'\n                    wp\
-      \ plugin install --path=/var/www/html/hp1 forminator --version=1.28.0 --activate\
-      \ --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
+      \                    wp core install --path=/var/www/html/hp1 --url=172.28.60.43:8001/hp1\
+      \ --title=\"Sito di Irene\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
+      \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
+      \ --path=/var/www/html/hp1 'http://172.28.60.43:8001/hp1' 'http://172.28.60.43/hp1'\n\
+      \                    wp plugin install --path=/var/www/html/hp1 forminator --version=1.28.0\
+      \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
       \ hello-elementor --version=2.9.0 --activate --allow-root\n\n              \
       \      '\n                    "
   db2:
@@ -75,14 +75,14 @@ services:
     - 3307:3306
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
-      MYSQL_DATABASE: ${MYSQL_DB_NAME}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_pass
   wp2:
     depends_on:
     - db2
-    image: wordpress:${WORDPRESS_VERSION}
+    image: wordpress:latest
     networks:
       lan2:
         ipv4_address: 10.0.2.5
@@ -94,9 +94,9 @@ services:
     restart: always
     environment:
       WORDPRESS_DB_HOST: db2
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
-      WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
+      WORDPRESS_DB_USER: db_user
+      WORDPRESS_DB_PASSWORD: db_pass
+      WORDPRESS_DB_NAME: wordpress
   wpcli2:
     depends_on:
     - db2
@@ -109,18 +109,18 @@ services:
     - wp2
     environment:
       WORDPRESS_DB_HOST: db2
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASS}
-      WORDPRESS_DB_NAME: ${MYSQL_DB_NAME}
+      WORDPRESS_DB_USER: db_user
+      WORDPRESS_DB_PASSWORD: db_pass
+      WORDPRESS_DB_NAME: wordpress
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
-      \                    wp core install --path=/var/www/html/hp2 --url=localhost:8002/hp2\
-      \ --title=\"Unito Medicina\" --admin_name=${WORDPRESS_ADMIN} --admin_password=${WORDPRESS_ADMIN_PSW}\
-      \ --admin_email=${WORDPRESS_MAIL}\n                    wp search-replace --path=/var/www/html/hp2\
-      \ 'http://localhost:8002/hp2' 'http://localhost/hp2'\n                    wp\
-      \ plugin install --path=/var/www/html/hp2 social-share-buttons-lite --version=1.0.9\
-      \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp2\
-      \ oceanwp --version=3.5.3 --activate --allow-root\n\n                    '\n\
-      \                    "
+      \                    wp core install --path=/var/www/html/hp2 --url=172.28.60.43:8002/hp2\
+      \ --title=\"Sito di Zaira\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
+      \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
+      \ --path=/var/www/html/hp2 'http://172.28.60.43:8002/hp2' 'http://172.28.60.43/hp2'\n\
+      \                    wp plugin install --path=/var/www/html/hp2 social-share-buttons-lite\
+      \ --version=1.0.9 --activate --allow-root\n\n                    wp theme install\
+      \ --path=/var/www/html/hp2 oceanwp --version=3.5.3 --activate --allow-root\n\
+      \n                    '\n                    "
 networks:
   lan1:
     ipam:

@@ -11,8 +11,6 @@ import hashlib
 import getpass
 from threading import Thread
 
-sudo_pass = getpass.getpass('Please insert your sudo password')
-
 # checking for -s flag (save to file)
 user_filename = ''
 redirection_flag = False
@@ -26,9 +24,9 @@ if '-s' in sys.argv:
         sys.exit()
 
 # checking for --no-save-rules flag (to not backup old iptables rules)
-user_saveipt_config = False
-if not '--no-save-rules' in sys.argv:
-    parser.save_rules()
+#user_saveipt_config = False
+#if not '--no-save-rules' in sys.argv:
+#    parser.save_rules()
         
 # configuration file from user (comf.json)
 with open("./config.json", "r") as conf:
@@ -46,6 +44,9 @@ for i in range(1, subnets + 1):
     networks_list.append(f'lan{str(i)}')
     title_list.append(conf_j[f"{i}"]["title"])
 
+parser.clear_rules()
+
+#sys.exit()
 
 ipt_rules = parser.create_rules(subnets, ip)
 with open('rules.sh', 'w') as file:
@@ -64,10 +65,9 @@ revproxy = parser.make_rev_proxy_service(networks_list, ip)
 template_yaml['services'].update(revproxy)
 
 # default.conf configuration for the proxy
-if not os.path.exists("./proxy/conf/default.conf"):
-    default_conf = parser.proxy_configuration(dns, subnets, ip, start_port)
-    with open('./proxy/conf/default.conf', 'w') as proxyconf:
-        proxyconf.write(default_conf)   
+default_conf = parser.proxy_configuration(dns, subnets, ip, start_port)
+with open('./proxy/conf/default.conf', 'w') as proxyconf:
+    proxyconf.write(default_conf)   
 
 # make wp, mysql, wpcli services
 for i in range(1, subnets + 1):
@@ -122,9 +122,9 @@ with open(compose_filename, 'r') as compose_file:
 compose_file_digest = hashlib.sha256(data.encode('utf-8')).hexdigest()
 
 if '--no-apply-rules' not in sys.argv:
-    subprocess.run(['sudo', 'sh', './rules.sh'], input = (sudo_pass + '\n'), text = True)
+    subprocess.run(['sh', './rules.sh'])
 
-log_manager_thread = Thread(target = log_manager.start_log_manager, args = [compose_file_digest, compose_filename, sudo_pass])
+log_manager_thread = Thread(target = log_manager.start_log_manager, args = [compose_file_digest, compose_filename])
 intrusion_detector_thread = Thread(target = detector.start_detector)
 log_manager_thread.daemon = True
 intrusion_detector_thread.daemon = True
@@ -135,5 +135,5 @@ try:
     time.sleep(3)
     subprocess.call(['tail', '-f', 'log_manager.log', 'intrusions.log'])
 except KeyboardInterrupt:
-    print('Exiting...')
+    #print('Exiting...')
     sys.exit()

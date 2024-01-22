@@ -8,10 +8,7 @@ import intrusion_detector as detector
 import hashlib
 from threading import Thread
 
-if '-h' in sys.argv:
-    print('FLAG:\t\t\tDESCRIPTION:\n-h\t\t\tshows this list\n--no-verbose\t\thide state messages\n--no-apply-rules\tdoes not apply iptables rules\n')    
-    sys.exit()
-
+# clear iptables rules
 parser.clear_rules()
 
 compose_filename = 'not found'
@@ -40,9 +37,13 @@ intrusion_detector_thread.daemon = True
 log_manager_thread.start()
 intrusion_detector_thread.start()
 
-if '--no-verbose' not in sys.argv:
-    try:
-        time.sleep(3)
-        subprocess.call(['tail', '-f', 'log_manager.log', 'intrusions.log'])
-    except KeyboardInterrupt:
-        sys.exit()
+# send stdout to /dev/null for non verbose mode (> /dev/null 2>&1 &)
+# having a service version of hp_manager use:
+# - StandardOutput=null
+# - StandardError=null
+
+try:
+    time.sleep(3)
+    subprocess.call(['tail', '-f', 'log_manager.log', 'intrusions.log'])
+except KeyboardInterrupt:
+    sys.exit()

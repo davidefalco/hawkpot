@@ -11,7 +11,7 @@ Type=simple
 Restart=no
 User=root
 ExecStart=/usr/bin/python3 {dir}/hp_manager.py --no-apply-rules
-
+WorkingDirectory={dir}
 StandardOutput=null
 
 [Install]

@@ -6,9 +6,15 @@ import configuration_parser as parser
 import log_manager
 import intrusion_detector as detector
 import hashlib
+import signal
 from threading import Thread
 
-# clear iptables rules
+def sigterm_handler(_signo, _stack_frame):
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+
+# clear current iptables rules
 parser.clear_rules()
 
 compose_filename = 'not found'

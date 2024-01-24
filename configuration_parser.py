@@ -17,14 +17,6 @@ def create_rules(subnets : int, ip : list):
                             f'sudo iptables -A DOCKER-USER -s {str(ip[0])+"."+str(ip[1])+"."+str(int(ip[2]) + i)+".5"} ! -d {str(ip[0])+"."+str(ip[1])+"."+str(int(ip[2]) + i)+".10"} -p tcp --dport 443 -j COUNT_HP{i}\n'])
     return ipt_rules
 
-'''
-def save_rules():
-    # saving current docker iptables' rules
-    ipt_command = ['sudo', 'iptables-save']
-    print('Saving current docker iptables\' rules. Plase be sure your docker service is started.')
-    subprocess.run(ipt_command, stdout = open('current-iptables.save', 'w'), check = True)
-'''
-
 def make_rev_proxy_service(networks_list : list, ip : list):
     net_rev_proxy = {}
     j = 1
@@ -42,7 +34,7 @@ def make_rev_proxy_service(networks_list : list, ip : list):
     revproxy = {
         'rev':{
             'image':'nginx',
-            'ports':['443:443'],
+            'ports':['443:443', '80:80'],
             'volumes':['./proxy/log:/var/log/nginx/', './proxy/ssl:/etc/nginx/ssl', './proxy/conf:/etc/nginx/conf.d'],
             'networks': net_rev_proxy
         }
@@ -134,7 +126,7 @@ def make_network(lan_name : str, subnet):
 
 def proxy_configuration(dns : str, subnets : int, ip : list, start_port : str):
     subprocess.call(["mkdir", "-p", "./proxy/conf"])
-    default_conf = 'server{\n\tlisten 443 ssl;\n\tserver_name '+dns+';\n\n\tssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;\n\tssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;\n\n\t'
+    default_conf = 'server{\n\tlisten 80;\n\tserver_name ' + dns + ';\n\treturn 301 https://$server_name$request_uri;\n}\nserver{\n\tlisten 443 ssl;\n\tserver_name '+dns+';\n\n\tssl_certificate /etc/nginx/ssl/nginx-selfsigned.crt;\n\tssl_certificate_key /etc/nginx/ssl/nginx-selfsigned.key;\n\n\t'
     for i in range (1, subnets + 1):
         # wp_ip is ip address for gateway of each honeypot
         wp_ip = str(ip[0])+'.'+str(ip[1])+'.'+str(int(ip[2]) + i)+'.1'

@@ -24,7 +24,7 @@ def create_log(compose_file_digest):
         try:
             if not os.path.exists('./log_manager.log'):
                 with open('./log_manager.log', 'a+') as log:
-                    log.write('Backup file created for ' + compose_file_digest + '\n')
+                    log.write('Backup file created for logging ingormation about log_manager actions\n')
 
             today_datetime = datetime.datetime.today()
             today_date = today_datetime.strftime('%Y-%m-%d')

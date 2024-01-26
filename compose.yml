@@ -59,10 +59,17 @@ services:
       WORDPRESS_DB_PASSWORD: db_pass
       WORDPRESS_DB_NAME: wordpress
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
+<<<<<<< Updated upstream
       \                    wp core install --path=/var/www/html/hp1 --url=172.28.60.43:8001/hp1\
       \ --title=\"Sito di Irene\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
       \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
       \ --path=/var/www/html/hp1 'http://172.28.60.43:8001/hp1' 'http://172.28.60.43/hp1'\n\
+=======
+      \                    wp core install --path=/var/www/html/hp1 --url=localhost:8001/hp1\
+      \ --title=\"Unito Informatica\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
+      \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
+      \ --path=/var/www/html/hp1 'http://localhost:8001/hp1' 'http://localhost/hp1'\n\
+>>>>>>> Stashed changes
       \                    wp plugin install --path=/var/www/html/hp1 forminator --version=1.28.0\
       \ --activate --allow-root\n\n                    wp theme install --path=/var/www/html/hp1\
       \ hello-elementor --version=2.9.0 --activate --allow-root\n\n              \
@@ -113,10 +120,17 @@ services:
       WORDPRESS_DB_PASSWORD: db_pass
       WORDPRESS_DB_NAME: wordpress
     command: " \n                    /bin/sh -c '\n                    sleep 60;\n\
+<<<<<<< Updated upstream
       \                    wp core install --path=/var/www/html/hp2 --url=172.28.60.43:8002/hp2\
       \ --title=\"Sito di Zaira\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
       \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
       \ --path=/var/www/html/hp2 'http://172.28.60.43:8002/hp2' 'http://172.28.60.43/hp2'\n\
+=======
+      \                    wp core install --path=/var/www/html/hp2 --url=localhost:8002/hp2\
+      \ --title=\"Unito Medicina\" --admin_name=wp-admin --admin_password=MyStr0ngP4ss\
+      \ --admin_email=unito.admin@mail.com\n                    wp search-replace\
+      \ --path=/var/www/html/hp2 'http://localhost:8002/hp2' 'http://localhost/hp2'\n\
+>>>>>>> Stashed changes
       \                    wp plugin install --path=/var/www/html/hp2 social-share-buttons-lite\
       \ --version=1.0.9 --activate --allow-root\n\n                    wp theme install\
       \ --path=/var/www/html/hp2 oceanwp --version=3.5.3 --activate --allow-root\n\

@@ -8,10 +8,11 @@
 5. Start your composition: `docker compose start`.
 
 ###### Notes
-If you change your compose (manually or by `hp_parser.py`) you need to restart `hawkpot.service`.
+If you change your compose (manually or by `hp_parser.py`) you need to restart `hawkpot.service`.<br>
 Some commands will require elevated privileges so it might be useful add some lines to `sudoers` file if you don't want to use `root` user:
 - run `sudo visudo`
-- add at the end of the file the follow lines: ```
+- add at the end of the file the follow lines: <br>
+```
 sudo ALL=(ALL) NOPASSWD: iptables
 sudo ALL=(ALL) NOPASSWD: ...
 sudo ALL=(ALL) NOPASSWD: ...

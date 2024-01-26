@@ -6,7 +6,6 @@
 
 	"1":{
 		"MYSQL_USER": "db_user",
-<<<<<<< Updated upstream
         "MYSQL_PASS": "db_pass",
         "MYSQL_ROOT_PASS": "admin",
         "MYSQL_DB_NAME": "wordpress",
@@ -18,19 +17,6 @@
         "WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
         "WORDPRESS_MAIL": "unito.admin@mail.com",
 		"title":"Unito Informatica",
-=======
-		"MYSQL_PASS": "db_pass",
-		"MYSQL_ROOT_PASS": "admin",
-		"MYSQL_DB_NAME": "wordpress",
-		"WORDPRESS_VERSION": "latest",
-		"WORDPRESS_DB_USER": "db_user",
-		"WORDPRESS_DB_PASS": "db_pass",
-		"WORDPRESS_DB_NAME": "wordpress",
-		"WORDPRESS_ADMIN": "wp-admin",
-		"WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
-		"WORDPRESS_MAIL": "unito.admin@mail.com",
-		"title":"Sito di Irene",
->>>>>>> Stashed changes
 		"plugin":[
 			{
 				"name":"forminator",
@@ -46,7 +32,6 @@
 	},
 	"2":{
 		"MYSQL_USER": "db_user",
-<<<<<<< Updated upstream
         "MYSQL_PASS": "db_pass",
         "MYSQL_ROOT_PASS": "admin",
         "MYSQL_DB_NAME": "wordpress",
@@ -58,19 +43,6 @@
         "WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
         "WORDPRESS_MAIL": "unito.admin@mail.com",
 		"title":"Unito Medicina",
-=======
-		"MYSQL_PASS": "db_pass",
-		"MYSQL_ROOT_PASS": "admin",
-		"MYSQL_DB_NAME": "wordpress",
-		"WORDPRESS_VERSION": "latest",
-		"WORDPRESS_DB_USER": "db_user",
-		"WORDPRESS_DB_PASS": "db_pass",
-		"WORDPRESS_DB_NAME": "wordpress",
-		"WORDPRESS_ADMIN": "wp-admin",
-		"WORDPRESS_ADMIN_PSW": "MyStr0ngP4ss",
-		"WORDPRESS_MAIL": "unito.admin@mail.com",
-		"title":"Sito di Zaira",
->>>>>>> Stashed changes
 		"plugin":[
 			{
 				"name":"social-share-buttons-lite",

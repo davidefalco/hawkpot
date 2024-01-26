@@ -1,17 +1,20 @@
-# hawkpot<br>
-## A dynamic honeypot
+# hawknet
+### A dynamic honeynet
+###### Installation guide
+1. Run `install.py` script, it will create `hawkpot.service` for you.
+2. Populate `config.json` as you want. (There is a `config.json` sample file in this repo).
+3. Run `hp_parser.py > compose.yml` to configure your honeynet. In addition to `compose.yml` it will create `default.conf` file (for the reverse proxy) inside `./proxy/conf/` directory and `rules.sh` file to set `iptables` rules (for intrusions detecting). Rules will be set automatically. Furthermore reverse proxy use SSL, so you have to provide SSL certificates. You have to copy them inside `./proxy/ssl/` and you should name them `nginx-selfsigned.crt` and `nginx-selfsigned.key`. If you are an expert, you can edit `default.conf` to change names for your keys. Do it before run your composition. You may have to create `ssl` folder inside `./proxy/`, put here your keys.
+4. Run `systemctl start hawkpot.service`. It will start `log_manager.py` and `intrusion_detector.py`, they will write logs, respectively, inside `log_manager.log` and `intrusions.log` (follow this file with `tail` to gain information about intrusions).
+5. Start your composition: `docker compose start`.
 
-#### Installation guide
-1. `manager.py` creates the content for `default.conf` file.<br>
-2. If `default.conf` file does not exist, it is created and populated by the manager. (If you edit `default.conf` file and you want to reset it, just delete it from `/proxy/conf/`). (**Note**: the manager creates automatically `/proxy/conf/`.)<br>
-3. The manager prints on stdout the configuration file (you can use `python3 manager.py > compose.yml` for redirecting on a compose file).<br>
-4. The reverse proxy use SSL, you must provide SSL certificates. You have to copy them inside `/proxy/ssl/` and you should name them `nginx-selfsigned.crt` and `nginx-selfsigned.key`. If you are an expert, you can edit `default.conf` for changing names for your key pair. (**Warn**: put SSL certificates in the right place before compose your deployment, so inside _proxy_ folder create _ssl_ folder and copy there your keys.)<br>
-5. Now you can compose your deployment.<br>
+###### Notes
+If you change your compose (manually or by `hp_parser.py`) you need to restart `hawkpot.service`.
+Some commands will require elevated privileges so it might be useful add some lines to `sudoers` file if you don't want to use `root` user:
+- run `sudo visudo`
+- add at the end of the file the follow lines: ```
+sudo ALL=(ALL) NOPASSWD: iptables
+sudo ALL=(ALL) NOPASSWD: ...
+sudo ALL=(ALL) NOPASSWD: ...
+```
 
-#### `config.json` file
-`config.json` file can be used for customizing your Wordpress installations and subnetting.<br>
-Check the example in this repo.
 
-#### `.env` file
-`.env` file can be used for customizing authentication information about the database and Wordpress.<br>
-Check the example in this repo.

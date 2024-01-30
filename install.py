@@ -3,14 +3,14 @@ import os
 dir = os.getcwd()
 
 service = f'''[Unit]
-Description=My test service
+Description=Hawkpot service
 After=multi-user.target
 
 [Service]
 Type=simple
 Restart=no
 User=root
-ExecStart=/usr/bin/python3 {dir}/hp_manager.py --no-apply-rules
+ExecStart=/usr/bin/python3 {dir}/hp_manager.py
 WorkingDirectory={dir}
 StandardOutput=null
 

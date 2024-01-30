@@ -2,7 +2,7 @@
 	"subnets":2,
 	"subnets_ip_address_start":"10.0.0.0",
 	"start_port":8000,
-	"dns":"172.28.60.43",
+	"dns":"df-rpi.duckdns.org",
 
 	"1":{
 		"MYSQL_USER": "db_user",
